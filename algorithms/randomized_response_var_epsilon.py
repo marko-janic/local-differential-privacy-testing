@@ -38,7 +38,7 @@ def analyze_data(data, epsilon):
 
 
 # Load the features dataset
-features_path = 'dataset/features.csv'
+features_path = '../dataset/features.csv'
 data = pd.read_csv(features_path, index_col=0)
 
 # Different hardcoded epsilon values
