@@ -15,7 +15,8 @@ def main():
 
     # Test Count min Sketch
     #test_loaded_matrix()
-    test_count_mean_sketch(features["GenHlth"], 3)
+    test_count_mean_sketch(features["GenHlth"], 0.5)
+    #test_cms_histograms(features["GenHlth"])
 
 
 if __name__ == "__main__":

@@ -16,19 +16,19 @@ def test_laplace(test_column, column_name):
         times.append(end-start)
 
         # calculate errors between the columns
-        errors.append(((test_column - laplace_column)**2).mean())
+        errors.append((((test_column - laplace_column)/len(test_column))**2).mean())
 
     plt.title("Laplace Method: Epsilon vs Computation Time for Column: " + column_name)
     plt.plot(epsilons, times)
     plt.xlabel("Epsilon Values")
-    plt.ylabel("Time in seconds")
+    plt.ylabel("Computation Time in seconds")
     plt.savefig("figures/laplace_eps_vs_comp_" + column_name + ".png")
     plt.show()
 
-    plt.title("Laplace Mechanism: MSE vs Epsilon for Column: " + column_name)
+    plt.title("Laplace: Normalized MSE vs Epsilon for Column: " + column_name)
     plt.plot(epsilons, errors)
     plt.xlabel("Epsilon Values")
-    plt.ylabel("Mean Squared Error")
+    plt.ylabel("Normalized Mean Squared Error")
     plt.savefig("figures/laplace_eps_vs_mse_" + column_name + ".png")
     plt.show()
 
@@ -39,6 +39,8 @@ def test_laplace(test_column, column_name):
     plt.hist(test_column, bins=30, color="b", alpha=alpha, label="True Values")
     plt.hist(laplace_column, bins=30, color="r", alpha=alpha, label="Laplace Values")
     plt.legend()
+    plt.xlabel("Age Range (1 is 18-24, 9 is 60-64, 13 is 80+)")
+    plt.ylabel("Number of people")
     plt.text(.01, .99, "Epsilon = " + str(epsilon), ha='left', va='top', transform=plt.gca().transAxes)
     plt.savefig("figures/laplace_hist_" + column_name + ".png")
     plt.show()

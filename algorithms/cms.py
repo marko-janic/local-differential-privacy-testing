@@ -18,8 +18,8 @@ def test_cms_histograms(data_column):
     data_values = np.sort(data_column.unique())
 
     hash_val = 10
-    row = 30
-    epsilon = 1
+    row = 50
+    epsilon = 0.1
     n = len(data_column)
 
     print("Computing Sketch Matrix")
@@ -30,11 +30,17 @@ def test_cms_histograms(data_column):
     for value in data_values:
         estimated_counts.append(sketch.estimate_data_element(value))
 
-    data_column_counts.plot(kind="bar")
-    plt.bar(range(len(data_column_counts)), data_column_counts)
-    plt.show()
-
-    plt.bar(range(len(estimated_counts)), estimated_counts)
+    bar_width = 0.35
+    plt.bar(range(len(data_column_counts)), data_column_counts, bar_width, label="Real Counts")
+    plt.bar([p + bar_width for p in range(len(estimated_counts))], estimated_counts, bar_width, label="Estimated Counts")
+    plt.legend()
+    plt.xlabel("General Health")
+    plt.xticks(rotation=0)
+    plt.ylabel("Number of People")
+    plt.title("Histogram CSM Estimated vs Real Counts")
+    plt.text(.01, .99, "Epsilon = " + str(epsilon) + "\nk = " + str(hash_val) + "\nm = " + str(row),
+             ha='left', va='top', transform=plt.gca().transAxes)
+    plt.savefig("figures/cms_histogram_hash="+str(hash_val)+"_rows="+str(row)+"_epsilon="+str(epsilon)+".png")
     plt.show()
 
     normalized_estimated_counts = [element/n for element in estimated_counts]
@@ -43,19 +49,18 @@ def test_cms_histograms(data_column):
 
 
 def test_loaded_matrix():
-    visualization_array = np.load("figures/cms_heatmap_epsilon=0.5_rows10to110_hashes1to11_not_normalized.npy")
-    hashes_min = 100
-    hashes_max = 1100
-    hashes_step = 100
-    rows_min = 20
-    rows_max = 220
-    rows_step = 20
+    visualization_array = np.load("figures/cms_heatmap_epsilon=0.5_rows10to210_hashes1to21.npy")
+    hashes_min = 1
+    hashes_max = 21
+    rows_min = 10
+    rows_max = 210
+    epsilon = 0.5
     extent = [rows_min, rows_max, hashes_min, hashes_max]
 
     print(visualization_array)
     plt.imshow(visualization_array, cmap="hot", interpolation="nearest", extent=extent, aspect="auto")
     plt.colorbar(label="Normalized RMSE between Real values and Estimations")
-    plt.title("Count Mean Sketch Heatmap")
+    plt.title("Count Mean Sketch Heatmap, Epsilon = " + str(epsilon))
     plt.xlabel("Number of Rows")
     plt.ylabel("Number of Hashes")
     plt.show()
@@ -63,12 +68,12 @@ def test_loaded_matrix():
 
 def test_count_mean_sketch(data_column, epsilon):
     n = len(data_column)
-    hashes_min = 100
-    hashes_max = 1100
-    hashes_step = 100
-    rows_min = 20
-    rows_max = 220
-    rows_step = 20
+    hashes_min = 1
+    hashes_max = 1000
+    hashes_step = 99
+    rows_min = 5
+    rows_max = 1000
+    rows_step = 99
     extent = [rows_min, rows_max, hashes_min, hashes_max]
     hashes = np.arange(hashes_min, hashes_max, hashes_step)
     rows = np.arange(rows_min, rows_max, rows_step)
@@ -108,7 +113,7 @@ def test_count_mean_sketch(data_column, epsilon):
     np.save("figures/cms_heatmap_epsilon=" + str(epsilon) + "_rows" + str(rows_min) + "to"+str(rows_max) + "_hashes"+str(hashes_min) +
             "to" + str(hashes_max), visualization_array)
     np.save(
-        "figures/cms_heatmap_epsilon=" + str(epsilon) + "0.5_rows" + str(rows_min) + "to" + str(rows_max) + "_hashes" + str(hashes_min) +
+        "figures/cms_heatmap_epsilon=" + str(epsilon) + "_rows" + str(rows_min) + "to" + str(rows_max) + "_hashes" + str(hashes_min) +
         "to" + str(hashes_max) + "_not_normalized", visualization_array_2)
     plt.imshow(visualization_array, cmap="hot", interpolation="nearest", extent=extent, aspect="auto")
     plt.colorbar(label="Normalized RMSE between Real values and Estimations")
