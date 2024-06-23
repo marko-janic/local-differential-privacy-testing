@@ -49,6 +49,9 @@ def test_cms_histograms(data_column):
 
 
 def test_loaded_matrix():
+    """
+    Debugging function mostly
+    """
     visualization_array = np.load("figures/cms_heatmap_epsilon=0.5_rows10to210_hashes1to21.npy")
     hashes_min = 1
     hashes_max = 21
@@ -67,13 +70,18 @@ def test_loaded_matrix():
 
 
 def test_count_mean_sketch(data_column, epsilon):
+    """
+    Makes a heat map of different cms paramter values.
+    :param data_column: data column to use from dataset
+    :param epsilon: privacy parameter
+    """
     n = len(data_column)
     hashes_min = 1
-    hashes_max = 1000
-    hashes_step = 99
+    hashes_max = 75
+    hashes_step = 5
     rows_min = 5
-    rows_max = 1000
-    rows_step = 99
+    rows_max = 76
+    rows_step = 5
     extent = [rows_min, rows_max, hashes_min, hashes_max]
     hashes = np.arange(hashes_min, hashes_max, hashes_step)
     rows = np.arange(rows_min, rows_max, rows_step)
@@ -151,8 +159,9 @@ class CountMeanSketch:
         M (list): Sketch matrix of size k x m.
 
     Methods:
-        update(self, data): Updates the sketch matrix with a new data point.
-        estimate(self, data): Estimates the count for a specific data point.
+        client(self, d): Compute data index pair for a data point d
+        update_sketch_matrix(self, v_tilde_list, j_list): Update sketch matrix given points in arguments
+        estimate_data_element(self, d): estimates the frequency of the data point given in d
     """
 
     def __init__(self, k, m, epsilon):
@@ -192,6 +201,11 @@ class CountMeanSketch:
         return hash_functions
 
     def client(self, d):
+        """
+        Compute pair (v_tilde, j) given a data point d
+        :param d: data point
+        :return: v_tilde, j: Encoding vector and index j for hash function
+        """
         j = random.randrange(self.k)
 
         # Encoding vector where its -1 everywhere except at index h_j(d) where its 1
@@ -210,8 +224,6 @@ class CountMeanSketch:
     def update_sketch_matrix(self, v_tilde_list, j_list):
         """
         Update sketch matrix given list of data (v_tilde, j)^n from the client
-
-        :return:
         """
         for i in range(len(v_tilde_list)):
             v_tilde = v_tilde_list[i]
@@ -222,6 +234,11 @@ class CountMeanSketch:
             self.M[j] = self.M[j] + x_tilde
 
     def estimate_data_element(self, d):
+        """
+        Estimate frequency of the data point d
+        :param d: data point to estimate frequency of
+        :return: frequency of data point d
+        """
         inner_sum = 0
         for l_index in range(self.k):
             inner_sum += self.M[l_index][self.H[l_index](d)]
