@@ -1,7 +1,4 @@
-TODO:
-- Randomized Response: Nimm e paar columns wo mir als sensitive betrachte und wend es a und denn verglich mit em originale
-    - Mit performance und computation time
+# Local Differential Privacy Testing
+We test different local differential privacy mechanisms on a CDC dataset about Diabetes health indicators (https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators).
 
-- Rappor uf columns wo int sind und luege wie es isch
-
-- Trainier e model mit mehr und mehr randomized response columsn sozusage
+Algorithm parameters can be adjusted in the functions themselves under the algorithms folder and then in the respective algorithm file.
